@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My JARVIS</title>
+</head>
+
+<body>
+
+<h1>🤖 JARVIS AI</h1>
+<p>Personal Assistant</p>
+
+<button onclick="startListening()">🎙️ Talk to JARVIS</button>
+
+<p id="status">JARVIS is ready.</p>
+<p id="result"></p>
+
+<script>
+
+function speak(text) {
+    let voice = new SpeechSynthesisUtterance(text);
+
+    voice.lang = "en-GB";
+    voice.rate = 0.85;
+    voice.pitch = 0.65;
+    voice.volume = 1;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(voice);
+}
+
+function startListening() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        document.getElementById("status").innerText =
+        "Speech recognition is not supported.";
+        return;
+    }
+
+    let recognition = new SpeechRecognition();
+
+    recognition.lang = "en-IN";
+    recognition.interimResults = false;
+
+    document.getElementById("status").innerText =
+    "JARVIS is listening...";
+
+    recognition.onresult = function(event) {
+
+        let command =
+        event.results[0][0].transcript.toLowerCase();
+
+        document.getElementById("result").innerText =
+        "You said: " + command;
+
+        let reply = "";
+
+        if (command.includes("hello")) {
+            reply = "Hello sir! How can I help you?";
+        }
+
+        else if (command.includes("how are you")) {
+            reply = "I am functioning perfectly, sir.";
+        }
+
+        else if (command.includes("who are you")) {
+            reply = "I am your personal assistant, JARVIS.";
+        }
+
+        else {
+            reply = "I am still learning, sir.";
+        }
+
+        document.getElementById("status").innerText =
+        "JARVIS: " + reply;
+
+        speak(reply);
+    };
+
+    recognition.onerror = function(event) {
+        document.getElementById("status").innerText =
+        "Microphone error: " + event.error;
+    };
+
+    recognition.onend = function() {
+        console.log("Listening stopped.");
+    };
+
+    recognition.start();
+}
+
+</script>
+
+</body>
+</html>
